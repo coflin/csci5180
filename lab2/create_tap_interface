@@ -1,0 +1,4 @@
+sudo ip -f link tuntap add tap0 mode tap
+sudo ifconfig tap0 198.51.100.2 netmask 255.255.255.0 up
+sudo ip link set tap0 up
+
