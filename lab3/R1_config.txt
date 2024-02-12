@@ -1,0 +1,166 @@
+Building configuration...
+
+Current configuration : 2056 bytes
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R1_irukuvajjula
+!
+boot-start-marker
+boot-end-marker
+!
+no logging console
+!
+aaa new-model
+!
+!
+!
+!
+aaa session-id common
+memory-size iomem 5
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+!
+!
+no ip domain lookup
+ip domain name cub.com
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username snir8112 privilege 15 password 7 105C061608031D041E
+archive
+ log config
+  hidekeys
+! 
+!
+!
+!
+ip tcp synwait-time 5
+ip ssh version 2
+!
+!
+!
+!
+interface Loopback1
+ ip address 10.10.10.1 255.255.255.255
+!
+interface Loopback2
+ ip address 11.11.11.1 255.255.255.255
+!
+interface FastEthernet0/0
+ ip address 198.51.100.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial2/0
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/1
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/2
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/3
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+router bgp 100
+ no synchronization
+ bgp log-neighbor-changes
+ network 10.10.10.1 mask 255.255.255.255
+ network 11.11.11.1 mask 255.255.255.255
+ neighbor 198.51.100.3 remote-as 100
+ neighbor 198.51.100.3 update-source FastEthernet0/0
+ neighbor 198.51.100.3 soft-reconfiguration inbound
+ no auto-summary
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+no cdp log mismatch duplex
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ privilege level 15
+ password 7 00161C09094F04091D
+ transport input all
+ transport output all
+line vty 5 15
+ privilege level 15
+ password 7 00161C09094F04091D
+ transport input all
+ transport output all
+!
+!
+end
