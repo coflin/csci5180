@@ -34,7 +34,7 @@ def connectRouter(ios,hostname):
     try:
         net_connect = ConnectHandler(**ios)
         logger.info(f"Successfully connected to {ios['ip']} as {ios['username']}")
-        return net_connect,hostname
+        return net_connect
     
     except Exception as e:
         logger.error(f"Unable to connect to {ios['ip']} as {ios['username']}. Check config and try again: {e}")
@@ -72,6 +72,9 @@ def configBGP(net_connect,hostname):
     except FileNotFoundError:
         logger.error("bgp.conf file not found. Please check if the file exists and is in the same location as this script.")
         sys.exit()
+
+    except json.decoder.JSONDecodeError as e:
+        logger.error(f"Please ensure bgp.conf file is enclosed in double quotes (\"\") and not single quotes (\'\') : {e}")
 
     try:
         commands = [
@@ -212,10 +215,10 @@ def main():
             showBGPRoutes(net_connect_dict[hostname],new_bgp_config["Routers"][hostname]["neighbor_ip"],hostname)
             saveConfig(net_connect_dict[hostname],hostname)
 
-    with open("bgp.conf", "w") as file:
-        file.write(str(new_bgp_config))
+    with open("bgp_new.conf", "w") as file:
+        json.dump(new_bgp_config, file, indent=4)
 
-    logger.info("Updated BGP State information in bgp.conf file.")
+    logger.info("Updated BGP State information in bgp_new.conf file.")
             
       
 if __name__ == "__main__":
