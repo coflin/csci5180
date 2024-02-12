@@ -34,11 +34,11 @@ router bgp 100
  neighbor 198.51.100.3 update-source FastEthernet0/0
  -------------------
 
- In [22]: print(IPv4Network("10.10.10.0/24").netmask)
-  255.255.255.0
+ In [22]: print(IPv4Network("10.10.10.1/32").netmask)
+ Out: 255.255.255.255
 
- In [23]: print(IPv4Network("10.10.10.0/24").network_address)
-  10.10.10.0
+ In [23]: print(IPv4Network("10.10.10.1/32").network_address)
+ Out: 10.10.10.1
 """
 
 def configBGP(net_connect,hostname):
@@ -53,24 +53,30 @@ def configBGP(net_connect,hostname):
         sys.exit()
 
     try:
-        for network in bgpconf['NetworkListToAdvertise']:
-            netaddress = IPv4Network(network).network_address
-            netmask = IPv4Network(network).netmask
-
-            commands = [
+        commands = [
                 f"router bgp {bgpconf['local_asn']}",
                 f"neighbor {bgpconf['neighbor_ip']} remote-as {bgpconf['neighbor_remote_as']}",
                 f"neighbor {bgpconf['neighbor_ip']} update-source {bgpconf['update-source']}",
-                f"neighbor {bgpconf['neighbor_ip']} soft-reconfiguration inbound",
-                f"network {netaddress} mask {netmask}"
+                f"neighbor {bgpconf['neighbor_ip']} soft-reconfiguration inbound"
             ]
 
-            output = net_connect.send_config_set(commands)
-        
+        for network in bgpconf['NetworkListToAdvertise']:
+            netaddress = IPv4Network(network).network_address
+            netmask = IPv4Network(network).netmask
+            commands.append(f"network {netaddress} mask {netmask}")
+
+        output = net_connect.send_config_set(commands)
+        device_output = output.splitlines()
+
+        for line in range(len(device_output)):
+            if "%" in device_output[line]:
+                logger.error(f"Invalid/Incomplete command: {(device_output[line-2])}\n{(device_output[line-1])}")
+                sys.exit()
+    
         logger.info(f"Configured iBGP on {hostname}")
 
     except Exception as e:
-        logger.error(f"Unable to configure iBGP on routers: {e}")
+        logger.error(f"Unable to configure iBGP on {hostname}: {e}")
 
 def main():
 
