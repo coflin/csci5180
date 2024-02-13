@@ -18,6 +18,7 @@ try:
     from netmiko import ConnectHandler
     import os
     from prettytable import PrettyTable
+    from sshInfo import sshInfo
     import sys
 
 except ModuleNotFoundError:
@@ -90,8 +91,11 @@ def configBGP(net_connect,hostname):
 
         output = net_connect.send_config_set(commands)
         device_output = output.splitlines()
-   
-        #Validating commands
+
+        """
+        Commands validation
+        """
+
         for line in range(len(device_output)):
             if "%" in device_output[line]:
                 logger.error(f"Invalid/Incomplete command: {(device_output[line-2])}\n{(device_output[line-1])}")
@@ -179,7 +183,10 @@ Main function
 - Parameters: None
 - Returns: None
 """
-def main(credential):
+def main():
+
+    credential = sshInfo()
+
     net_connect_dict = {}
     new_bgp_config  = {"Routers":{}}
 
