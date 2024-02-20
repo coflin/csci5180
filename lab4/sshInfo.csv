@@ -1,0 +1,5 @@
+Routers,Device_Type,IP,Username,Password
+R1,ios,198.51.100.1,snir8112,roomtoor
+R2,ios,198.51.101.2,snir8112,roomtoor
+R3,ios,198.51.101.3,snir8112,roomtoor
+R4,ios,172.16.1.3,snir8112,roomtoor

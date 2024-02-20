@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Router Credentials</title>
+    </head>
+    <body>
+        {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
+        <form method="post">
+            <div>
+                <h2> Login Credentials for {{ router }}</h1>
+                <br/><label for="{{ router }}_username">Enter Username:</label>
+                <br/><input type="text" id="{{ router }}_username" name="{{ router }}_username">
+                <br/><br/><label for="{{ router }}_password">Enter Password:</label>
+                <br/><input type="password" id="{{ router }}_password" name="{{ router }}_password">
+
+                <br/><h2>OSPF Information for {{ router }}</h2>
+                <br/><label for="{{ router }}_ospfprocess">OSPF Process ID:</label>
+                <br/><input type="text" id="{{ router }}_ospfprocess" name="{{ router }}_ospfprocess">
+                <br/><br/><label for="{{ router }}_loopback">Loopback IP:</label>
+                <br/><input type="text" id="{{ router }}_loopback" name="{{ router }}_loopback">
+
+                <br/><br/><label for="{{ router }}_advertise">Network to advertise:OSPF Area ID (seperated by space. Ex 10.0.0.0/24:0 11.0.0.0/32:1</label>
+                <br/><input type="text" id="{{ router }}_advertise" name="{{ router }}_advertise">
+                <!-- <br/><br/><label for="{{ router }}_ospfarea">OSPF Area ID:</label>
+                <br/><input type="text" name="{{ router }}_ospfarea[]" placeholder="Area ID"> -->
+
+            </div>
+            <div>
+                <br/><br/><button type="submit">Submit</button>
+            </div>
+        </form>
+    </body>
+</html>
