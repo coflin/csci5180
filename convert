@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+cd $1
+for file in *.py;do cp "$file" "${file%.py}.txt" ;done
