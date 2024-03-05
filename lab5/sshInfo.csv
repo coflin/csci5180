@@ -1,0 +1,3 @@
+Routers,Device_Type,IP,IPv6,Username,Password
+R4,cisco_ios,198.51.100.1,,snir8112,roomtoor
+R5,cisco_ios,,2001:DB8:0:1:C805:C4FF:FE22:0,snir8112,roomtoor
