@@ -1,0 +1,140 @@
+- name: Install essential packages
+  hosts: footballservers
+  become: true
+  tasks:
+
+    - name: Install FTP server
+      apt:
+        name: vsftpd
+        state: present
+        
+    - name: Install HTTP server
+      apt:
+        name: apache2
+        state: present
+        
+    - name: Install pip
+      apt:
+        name: python3-pip
+        state: present
+        
+    - name: Install expect
+      apt:
+        name: expect
+        state: present
+
+- name: Create users, groups, files and retrieve route and process information on Liverpool and Real Madrid Hosts
+  hosts: footballservers
+  become: true
+  tasks:
+    - name: Create groups
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "Attack"
+        - "Defense"
+        - "Captain"
+
+    - name: Create users for Liverpool
+      user:
+        name: "{{ item.username }}"
+        groups: "{{ item.groups }}"
+        append: yes
+        state: present
+        createhome: yes
+        comment: "{{ item.fullname }}"
+        umask: "{{ item.umask }}"
+      with_items:
+        - { username: "hkewell", groups: ["Attack"], fullname: "Harry Kewell", umask: "111" }
+        - { username: "mowen", groups: ["Attack"], fullname: "Michael Owen", umask: "111" }
+        - { username: "jcarragher", groups: ["Defense"], fullname: "Jamie Carragher", umask: "666" }
+        - { username: "dagger", groups: ["Defense"], fullname: "Daniel Agger", umask: "666" }
+        - { username: "sgerrard", groups: ["Captain", "sudo"], fullname: "Steven Gerrard", umask: "000" }
+      when: inventory_hostname == 'liverpool'
+
+    - name: Create users for Real Madrid
+      user:
+        name: "{{ item.username }}"
+        groups: "{{ item.groups }}"
+        append: yes
+        state: present
+        createhome: yes
+        comment: "{{ item.fullname }}"
+        umask: "{{ item.umask }}"
+      with_items:
+        - { username: "lfigo", groups: ["Attack"], fullname: "Luis Figo", umask: "111" }
+        - { username: "rsoldado", groups: ["Attack"], fullname: "Roberto Soldado", umask: "111" }
+        - { username: "rcarlos", groups: ["Defense"], fullname: "Roberto Carlos", umask: "666" }
+        - { username: "fcannavaro", groups: ["Defense"], fullname: "Fabio Cannavaro", umask: "666" }
+        - { username: "zzidane", groups: ["Captain", "sudo"], fullname: "Zinedine Zidane", umask: "000" }
+      when: inventory_hostname == 'realmadrid'
+
+    - name: Create directories for route table information on {{ inventory_hostname }}
+      file:
+        path: "/{{ inventory_hostname }}_Admin/Route_Info"
+        state: directory
+        owner: "{{ 'sgerrard' if inventory_hostname == 'liverpool' else 'zzidane' }}"
+        group: Captain
+        mode: "774"
+
+    
+    - name: Create Captain_Details.txt
+      copy:
+        content: |
+          Captain Details:
+          ----------------
+          Full Name: {{ item.fullname }}
+          Nationality: {{ item.nationality }}
+          Username: {{ item.username }}
+        dest: "/{{ inventory_hostname }}_Admin/Route_Info/Captain_Details.txt"
+      with_items:
+        - "{{ captain_info }}"
+      vars:
+        captain_info:
+          - { username: "{{ 'sgerrard' if inventory_hostname == 'liverpool' else 'zzidane' }}", fullname: "{{ 'Steven Gerrard' if inventory_hostname == 'liverpool' else 'Zinedine Zidane' }}", nationality: "{{ 'British' if inventory_hostname == 'liverpool' else 'French' }}" }
+
+
+- name: Retrieve route table and top ten running processes
+  hosts: footballservers
+  gather_facts: no
+  tasks:
+    - name: Get route table
+      shell: netstat -nr > /tmp/{{ inventory_hostname }}_route_table.txt
+
+    - name: Get top ten processes based on memory usage
+      shell: ps --sort -rss -eo pid,ppid,cmd,%mem,%cpu --no-headers | head -n 10 > /tmp/{{ inventory_hostname }}_top_ten_processes.txt
+
+    - name: Save route table and processes files to fifa_admin host
+      expect:
+        command: scp -o StrictHostKeyChecking=no /tmp/{{ inventory_hostname }}_route_table.txt /tmp/{{ inventory_hostname }}_top_ten_processes.txt student@10.224.79.73:/home/student/git/csci5180/lab6/{{ inventory_hostname }}
+        responses:
+          "password": "roomtoor"
+
+
+- name: Assemble and copy authorized keys
+  hosts: footballservers
+  become: true
+  tasks:
+    - name: Get user list
+      shell: "getent passwd | tail -n 5 | awk -F: '{print $1}'"
+      register: users_list
+
+    - name: Fetch public keys
+      shell: cat /home/{{ item }}/.ssh/id_rsa.pub
+      register: user_public_keys
+      with_items: "{{ users_list.stdout_lines }}"
+
+    - name: Ensure public keys are appended to authorized_keys
+      lineinfile:
+        path: "/root/.ssh/{{ inventory_hostname }}_authorizedKeys.txt"
+        line: "{{ item.stdout }}"
+        create: yes
+      with_items: "{{ user_public_keys.results }}"
+
+    - name: Copy authorized keys files from football servers to FIFA_admin
+      become: true
+      expect:
+        command: scp -o StrictHostKeyChecking=no /root/.ssh/{{ inventory_hostname }}_authorizedKeys.txt student@10.224.79.73:/root/.ssh/{{ inventory_hostname }}_authorizedKeys.txt
+        responses:
+          "password": "roomtoor"

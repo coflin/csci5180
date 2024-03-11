@@ -1,0 +1,10 @@
+    317       1 /lib/systemd/systemd-journa 14.1  0.1
+   1777    1627 /usr/bin/gnome-shell        10.4  0.2
+   2132    1627 /usr/libexec/gnome-initial-  5.3  0.0
+   2370    1627 /usr/libexec/gnome-terminal  4.2  0.0
+   2369    1627 /usr/bin/seahorse --gapplic  3.1  0.0
+   2496    1756 update-notifier              2.7  0.0
+  31939   31938 /usr/bin/python3 /home/stud  2.4  0.0
+    710       1 /usr/lib/snapd/snapd         2.4  0.0
+   2261    1627 /usr/libexec/gsd-xsettings   2.3  0.0
+   1721    1627 /usr/libexec/tracker-miner-  2.1  0.0

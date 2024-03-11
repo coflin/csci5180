@@ -1,0 +1,29 @@
+- name: Remove users and groups created by playbook
+  hosts: footballservers
+  become: true
+  tasks:
+    - name: Remove users
+      user:
+        name: "{{ item.username }}"
+        state: absent
+        remove: yes
+      with_items:
+        - { username: "hkewell", groups: ["Attack"] }
+        - { username: "mowen", groups: ["Attack"] }
+        - { username: "jcarragher", groups: ["Defense"] }
+        - { username: "dagger", groups: ["Defense"] }
+        - { username: "sgerrard", groups: ["Captain", "sudo"] }
+        - { username: "lfigo", groups: ["Attack"] }
+        - { username: "rsoldado", groups: ["Attack"] }
+        - { username: "rcarlos", groups: ["Defense"] }
+        - { username: "fcannavaro", groups: ["Defense"] }
+        - { username: "zzidane", groups: ["Captain", "sudo"] }
+
+    - name: Remove groups
+      group:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - "Attack"
+        - "Defense"
+        - "Captain"
