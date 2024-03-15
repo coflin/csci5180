@@ -1,0 +1,27 @@
+hostname {{ item.hostname }}
+
+interface Loopback1
+ ip address {{ item.loopback.ip }} {{ item.loopback.subnet_mask }}
+
+{% if 'fa0/0' in item %}
+interface FastEthernet0/0
+ ip address {{ item['fa0/0'].ip }} {{ item['fa0/0'].subnet_mask }}
+{% endif %}
+
+{% if 'fa1/0' in item %}
+interface FastEthernet1/0
+ ip address {{ item['fa1/0'].ip }} {{ item['fa1/0'].subnet_mask }}
+{% endif %}
+
+{% if 'fa2/0' in item %}
+interface FastEthernet2/0
+ ip address {{ item['fa2/0'].ip }} {{ item['fa2/0'].subnet_mask }}
+{% endif %}
+
+router ospf {{ item.ospf_process_id }}
+{% for interface, config in item.items() %}
+    {% if interface != 'hostname' and interface != 'ospf_process_id' and interface != 'ospf_area' %}    
+        {% if config.ospf_enabled %}       
+ network {{ config.ip }} {{ config.wildcard }} area {{ item.ospf_area }}{% endif %}
+    {% endif %}
+{% endfor %}

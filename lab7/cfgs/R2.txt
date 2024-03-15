@@ -1,0 +1,24 @@
+hostname R2
+
+interface Loopback1
+ ip address 20.0.0.1 255.255.255.255
+
+interface FastEthernet0/0
+ ip address 198.51.100.3 255.255.255.0
+
+interface FastEthernet1/0
+ ip address 198.51.101.2 255.255.255.0
+
+interface FastEthernet2/0
+ ip address 198.51.102.1 255.255.255.0
+
+router ospf 2
+            
+               
+ network 20.0.0.1 0.0.0.0 area 0            
+               
+ network 198.51.100.3 0.0.0.255 area 0            
+               
+ network 198.51.101.2 0.0.0.255 area 0            
+               
+ network 198.51.102.1 0.0.0.255 area 0            

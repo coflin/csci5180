@@ -1,0 +1,60 @@
+routers:
+- hostname: R1
+  loopback:
+    ip: 10.0.0.1
+    subnet_mask: 255.255.255.255
+    ospf_enabled: true
+    wildcard: 0.0.0.0
+  fa0/0:
+    ip: 198.51.100.1
+    subnet_mask: 255.255.255.0
+    ospf_enabled: true
+    wildcard: 0.0.0.255
+  fa1/0:
+    ip: 198.51.101.1
+    subnet_mask: 255.255.255.0
+    ospf_enabled: true
+    wildcard: 0.0.0.255
+  ospf_process_id: 1
+  ospf_area: 0
+- hostname: R2
+  loopback:
+    ip: 20.0.0.1
+    subnet_mask: 255.255.255.255
+    ospf_enabled: true
+    wildcard: 0.0.0.0
+  fa0/0:
+    ip: 198.51.100.3
+    subnet_mask: 255.255.255.0
+    ospf_enabled: true
+    wildcard: 0.0.0.255
+  fa1/0:
+    ip: 198.51.101.2
+    subnet_mask: 255.255.255.0
+    ospf_enabled: true
+    wildcard: 0.0.0.255
+  fa2/0:
+    ip: 198.51.102.1
+    subnet_mask: 255.255.255.0
+    ospf_enabled: true
+    wildcard: 0.0.0.255
+  ospf_process_id: 2
+  ospf_area: 0
+- hostname: R3
+  loopback:
+    ip: 30.0.0.1
+    subnet_mask: 255.255.255.255
+    ospf_enabled: true
+    wildcard: 0.0.0.0
+  fa0/0:
+    ip: 198.51.100.4
+    subnet_mask: 255.255.255.0
+    ospf_enabled: true
+    wildcard: 0.0.0.255
+  fa1/0:
+    ip: 198.51.102.2
+    subnet_mask: 255.255.255.0
+    ospf_enabled: true
+    wildcard: 0.0.0.255
+  ospf_process_id: 3
+  ospf_area: 0

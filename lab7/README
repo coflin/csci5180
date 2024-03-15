@@ -1,0 +1,20 @@
+Author: Sneha Irukuvajjula
+Date: March 14, 2024
+
+Pre-Req
+1. Have the following directory structure:
+	./roles
+	./roles/router
+	./roles/router/templates
+	./roles/router/vars
+	./roles/router/tasks
+	./cfgs
+2. Have the generate_yaml.py file in whichever parent directory the "roles" directory exists. 
+3. Have the router_config.j2 Jinja2 template stored in ./roles/router/templates.
+4. Have a GNS3 topology setup with ssh and IP connectivity. You can download it from the gns3 folder in this folder.
+------------------------------------------------------------------------------------------------
+
+How to run this code:
+1. Run "python3 generate_yaml.py" to generate the router_config.yaml file.
+2. Run "ansible-playbook router_config.yaml" to generate the routers configuration file.
+3. Finally, run "python3 push_config.py" to push the necessary configurations to the routers.
